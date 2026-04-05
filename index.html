@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resort Comparison — 3N / 4D</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; padding: 16px; color: #1a1a1a; font-size: 14px; }
+
+  h1 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .sub { font-size: 13px; color: #6b6b6b; margin-bottom: 20px; }
+
+  /* Section heading */
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin: 24px 0 10px; }
+
+  /* Scrollable table wrapper */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+  table { width: 100%; border-collapse: collapse; background: #fff; min-width: 560px; }
+
+  thead th { padding: 14px 16px; text-align: left; font-size: 13px; font-weight: 600; border-bottom: 1px solid #e5e3de; }
+  thead th:first-child { background: #f5f4f0; color: #6b6b6b; font-weight: 500; min-width: 130px; }
+  thead .col-jw { background: #eef5fb; color: #0c447c; }
+  thead .col-kh { background: #fef3e2; color: #7a4a0a; }
+  thead .col-nr { background: #eaf5ee; color: #1a5c2a; }
+
+  tbody tr { border-bottom: 1px solid #f0ede8; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr.sec td { background: #f5f4f0; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; padding: 8px 16px; }
+  tbody td { padding: 12px 16px; font-size: 13px; vertical-align: top; line-height: 1.5; }
+  tbody td:first-child { color: #6b6b6b; font-size: 12px; font-weight: 500; background: #fafaf8; min-width: 130px; }
+
+  .yes  { color: #1a7a3a; font-weight: 600; }
+  .no   { color: #c0392b; font-weight: 600; }
+  .mid  { color: #b8740a; font-weight: 600; }
+  .note { display: block; font-size: 11.5px; color: #888; margin-top: 2px; line-height: 1.4; }
+  .cost-big { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+
+  tr.verdict td { padding: 14px 16px; font-size: 12.5px; line-height: 1.6; }
+  tr.verdict td:first-child { font-weight: 600; font-size: 12px; color: #555; }
+  .v-jw { background: #eef5fb; }
+  .v-kh { background: #fef3e2; }
+  .v-nr { background: #eaf5ee; }
+
+  .rec { display: inline-block; background: #0c447c; color: #fff; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+
+  /* Cost summary */
+  .cost-box { margin-top: 20px; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
+  .cost-title { padding: 11px 16px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; background: #f5f4f0; border-bottom: 1px solid #e5e3de; }
+  .cost-row { display: flex; border-bottom: 1px solid #f0ede8; }
+  .cost-row:last-child { border-bottom: none; }
+  .cost-lbl { flex: 1.2; padding: 11px 16px; font-size: 13px; color: #555; background: #fafaf8; border-right: 1px solid #f0ede8; }
+  .cost-cell { flex: 1; padding: 11px 14px; font-size: 13px; font-weight: 500; text-align: center; }
+  .cost-cell small { display: block; font-size: 11px; font-weight: 400; color: #888; margin-top: 2px; }
+  .c-blue  { color: #0c447c; }
+  .c-amber { color: #b8740a; }
+  .c-green { color: #1a7a3a; }
+  .bold { font-weight: 700; font-size: 14px !important; }
+
+  /* Itinerary cards */
+  .itin-wrap { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+  .itin-card { flex: 1; min-width: 260px; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
+  .itin-head { padding: 12px 14px; font-size: 13px; font-weight: 600; color: #fff; }
+  .itin-head.jw { background: #185FA5; }
+  .itin-head.kh { background: #8B5A00; }
+  .itin-head.nr { background: #1a6b2a; }
+  .itin-sub { font-size: 11px; font-weight: 400; opacity: 0.85; display: block; margin-top: 2px; }
+  .day { border-bottom: 1px solid #f0ede8; padding: 10px 14px; }
+  .day:last-child { border-bottom: none; }
+  .day-num { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-bottom: 3px; }
+  .day-title { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 5px; }
+  .act { font-size: 12px; color: #555; line-height: 1.55; padding-left: 12px; position: relative; margin-bottom: 2px; }
+  .act::before { content: '·'; position: absolute; left: 3px; color: #aaa; }
+
+  .caveat { margin-top: 16px; background: #fff8ec; border-left: 3px solid #e6a817; border-radius: 0 8px 8px 0; padding: 12px 14px; font-size: 13px; color: #5a3e00; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<h1>Resort Comparison &amp; Itinerary</h1>
+<p class="sub">3 Nights / 4 Days &nbsp;·&nbsp; 16 travellers &nbsp;·&nbsp; Late May 2026</p>
+
+<!-- ═══ COMPARISON TABLE ═══ -->
+<p class="section-label">Side-by-side comparison</p>
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th class="col-jw">JW Marriott, Mussoorie<span class="rec">Best fit</span></th>
+      <th class="col-kh">The Khyber, Gulmarg</th>
+      <th class="col-nr">Naini Retreat, Nainital</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr class="sec"><td colspan="4">Location & Access</td></tr>
+    <tr>
+      <td>Airport</td>
+      <td>Dehradun · 65 km · 2 hrs</td>
+      <td>Srinagar · 58 km · 1.5–2 hrs</td>
+      <td>Pantnagar · 72 km · 2–2.5 hrs</td>
+    </tr>
+    <tr>
+      <td>Mumbai family</td>
+      <td><span class="yes">Direct flights daily</span></td>
+      <td><span class="mid">Via Delhi → Srinagar</span></td>
+      <td><span class="mid">Via Delhi, limited flights</span></td>
+    </tr>
+    <tr>
+      <td>Gurgaon + Agra + Kanpur</td>
+      <td><span class="yes">Drive or fly via Delhi</span></td>
+      <td><span class="no">All need Delhi → Srinagar</span></td>
+      <td><span class="yes">Can drive directly</span></td>
+    </tr>
+    <tr>
+      <td>May temperature</td>
+      <td>18–25°C · Cool &amp; pleasant</td>
+      <td>10–18°C · Coolest. Jacket weather.</td>
+      <td>17–27°C · Warmest of three</td>
+    </tr>
+    <tr>
+      <td>Altitude</td>
+      <td>6,400 ft</td>
+      <td>8,825 ft</td>
+      <td>6,358 ft</td>
+    </tr>
+
+    <tr class="sec"><td colspan="4">Property</td></tr>
+    <tr>
+      <td>Star rating</td>
+      <td>5-star</td>
+      <td>5-star</td>
+      <td>4-star</td>
+    </tr>
+    <tr>
+      <td>Room count</td>
+      <td><strong>115 rooms</strong></td>
+      <td>80 rooms + 5 cottages</td>
+      <td>~70 rooms</td>
+    </tr>
+    <tr>
+      <td>Resort feel</td>
+      <td><span class="yes">Large self-contained campus</span></td>
+      <td><span class="yes">7-acre fir-forest campus</span></td>
+      <td><span class="no">City hotel in Nainital town</span></td>
+    </tr>
+    <tr>
+      <td>Swimming pool</td>
+      <td><span class="yes">Indoor heated pool</span></td>
+      <td><span class="yes">Indoor heated pool</span></td>
+      <td><span class="yes">Indoor pool (rare for Nainital)</span></td>
+    </tr>
+    <tr>
+      <td>Kids zone</td>
+      <td><span class="yes">12,000 sq ft entertainment zone</span><span class="note">Bowling, billiards, adventure park, mini golf</span></td>
+      <td><span class="yes">Children's club + mini theatre</span></td>
+      <td><span class="mid">Playground only</span></td>
+    </tr>
+    <tr>
+      <td>Senior-friendliness</td>
+      <td><span class="yes">Flat campus, lifts, wheelchair access</span></td>
+      <td><span class="mid">Manageable but hilly approach</span></td>
+      <td><span class="no">Steps, no lift in older wings</span></td>
+    </tr>
+    <tr>
+      <td>Iconic experience</td>
+      <td>Kempty Falls (walkable). Mussoorie town 15 min.</td>
+      <td><span class="yes">Gondola to 13,000 ft. Wildflower meadows.</span></td>
+      <td><span class="yes">Naini Lake — boating, ropeway, Mall Road</span></td>
+    </tr>
+    <tr>
+      <td>Breakfast included</td>
+      <td><span class="no">No — ₹1,500/adult extra</span></td>
+      <td><span class="yes">Yes — included in room rate</span></td>
+      <td><span class="yes">Yes — included</span></td>
+    </tr>
+    <tr>
+      <td>Alcohol served</td>
+      <td><span class="yes">Yes</span></td>
+      <td><span class="yes">Yes</span></td>
+      <td><span class="yes">Yes</span></td>
+    </tr>
+
+    <tr class="sec"><td colspan="4">Pricing (3 nights, peak May)</td></tr>
+    <tr>
+      <td>Room rate / night</td>
+      <td><span class="cost-big">₹25,000–32,000</span><span class="note">Excl. breakfast &amp; taxes</span></td>
+      <td><span class="cost-big">₹27,000–38,000</span><span class="note">Incl. breakfast, excl. taxes</span></td>
+      <td><span class="cost-big">₹8,000–13,000</span><span class="note">Incl. breakfast</span></td>
+    </tr>
+    <tr>
+      <td>Children policy</td>
+      <td>Under 6 free. 6+ charged as adult (₹4,720/night)</td>
+      <td>Under 9 free. 10–14: ₹4,500/night. 15–17: ₹10,000/night</td>
+      <td>Under 6 free. Others ₹3,000/night</td>
+    </tr>
+    <tr>
+      <td>Est. 3N total — hotel only</td>
+      <td><span class="cost-big">₹5–6 lakh</span><span class="note">5 rooms + breakfast + kids</span></td>
+      <td><span class="cost-big">₹5–7 lakh</span><span class="note">Incl. Srinagar transit hotel</span></td>
+      <td><span class="cost-big">₹1.3–2 lakh</span><span class="note">Major saving</span></td>
+    </tr>
+    <tr>
+      <td>Budget position</td>
+      <td><span class="mid">Premium</span></td>
+      <td><span class="no">Most expensive</span></td>
+      <td><span class="yes">Budget-friendly</span></td>
+    </tr>
+
+    <tr class="sec"><td colspan="4">Watch-outs</td></tr>
+    <tr>
+      <td>Key caveat</td>
+      <td>Activity add-ons charged separately. Mussoorie busy in May — stay within resort.</td>
+      <td>Kashmir security perception. Complex routing for Agra + Kanpur families. Priciest option.</td>
+      <td>Town hotel, not a resort. Crowded in May. No lift in older sections. Best for group wanting lake-town vibe.</td>
+    </tr>
+
+    <tr class="sec"><td colspan="4">Verdict</td></tr>
+    <tr class="verdict">
+      <td>Our take</td>
+      <td class="v-jw">Strongest all-round fit. Largest facilities, easiest logistics for all 4 families, cool weather. The benchmark.</td>
+      <td class="v-kh">Most spectacular. Gondola experience is unforgettable. Choose this if group is comfortable with Kashmir — it will be the most memorable trip.</td>
+      <td class="v-nr">Best value by far. Right choice if budget dominates, or group wants charming lake-town experience over resort campus.</td>
+    </tr>
+
+  </tbody>
+</table>
+</div>
+
+<!-- ═══ COST SUMMARY ═══ -->
+<p class="section-label">Estimated group cost — 3 nights, 5 rooms, 16 pax</p>
+<div class="cost-box">
+  <div class="cost-title">Hotel costs only (excl. flights, transport, activities)</div>
+  <div class="cost-row">
+    <div class="cost-lbl"></div>
+    <div class="cost-cell c-blue" style="font-weight:600;">JW Marriott</div>
+    <div class="cost-cell c-amber" style="font-weight:600;">The Khyber</div>
+    <div class="cost-cell c-green" style="font-weight:600;">Naini Retreat</div>
+  </div>
+  <div class="cost-row">
+    <div class="cost-lbl">Rooms (5 × 3 nights)</div>
+    <div class="cost-cell c-blue">₹3.75–4.8 L<small>at ₹25K–32K/room</small></div>
+    <div class="cost-cell c-amber">₹4.05–5.7 L<small>at ₹27K–38K/room</small></div>
+    <div class="cost-cell c-green">₹1.2–1.95 L<small>at ₹8K–13K/room</small></div>
+  </div>
+  <div class="cost-row">
+    <div class="cost-lbl">Breakfast (13 adults × 3 days)</div>
+    <div class="cost-cell c-blue">₹58,500 extra<small>₹1,500/adult/day</small></div>
+    <div class="cost-cell c-amber">Included</div>
+    <div class="cost-cell c-green">Included</div>
+  </div>
+  <div class="cost-row">
+    <div class="cost-lbl">Kids charges (3 chargeable kids)</div>
+    <div class="cost-cell c-blue">₹42,000<small>3 kids × 3N × ₹4,720</small></div>
+    <div class="cost-cell c-amber">₹13,500<small>kids 10–14 only × 3N</small></div>
+    <div class="cost-cell c-green">₹9,000<small>3 kids × 3N × ₹1,000</small></div>
+  </div>
+  <div class="cost-row">
+    <div class="cost-lbl">Srinagar transit (arrival/departure)</div>
+    <div class="cost-cell c-blue">—</div>
+    <div class="cost-cell c-amber">₹30–50K est.<small>1 night if needed</small></div>
+    <div class="cost-cell c-green">—</div>
+  </div>
+  <div class="cost-row" style="background:#fafaf8; font-weight:600;">
+    <div class="cost-lbl" style="font-weight:700; color:#1a1a1a;">Total hotel est.</div>
+    <div class="cost-cell c-blue bold">₹4.7–5.9 L<small style="font-weight:400;">₹1.2–1.5 L per family</small></div>
+    <div class="cost-cell c-amber bold">₹4.4–6.6 L<small style="font-weight:400;">₹1.1–1.65 L per family</small></div>
+    <div class="cost-cell c-green bold">₹1.3–2 L<small style="font-weight:400;">₹33K–50K per family</small></div>
+  </div>
+</div>
+
+<div class="caveat">
+  <strong>Gulmarg routing note:</strong> Agra and Kanpur families need Delhi → Srinagar connections. For ~10 people across those two cities, add ₹80K–1.2 lakh in extra flights not needed for Mussoorie or Nainital.
+</div>
+
+<!-- ═══ ITINERARIES ═══ -->
+<p class="section-label">3N / 4D itinerary sketches</p>
+<div class="itin-wrap">
+
+  <!-- JW MARRIOTT -->
+  <div class="itin-card">
+    <div class="itin-head jw">
+      JW Marriott · Mussoorie
+      <span class="itin-sub">3 nights · 4 days · Dehradun airport base</span>
+    </div>
+    <div class="day">
+      <div class="day-num">Day 1 — Arrival</div>
+      <div class="day-title">All roads to Mussoorie</div>
+      <div class="act">Fly into Dehradun · 2 hr drive to JW Marriott</div>
+      <div class="act">Check in · explore resort · first sundowners</div>
+      <div class="act">Dinner at JW Café — multi-cuisine buffet</div>
+    </div>
+    <div class="day">
+      <div class="day-num">Day 2 — Resort + Kempty</div>
+      <div class="day-title">Kids zone, falls & valley views</div>
+      <div class="act">Morning: 12,000 sq ft entertainment zone — bowling, games, outdoor adventure</div>
+      <div class="act">Afternoon: Kempty Falls (walkable from resort) · Mussoorie Mall Road &amp; Gun Hill</div>
+      <div class="act">Evening: Bonfire + karaoke at resort amphitheatre</div>
+    </div>
+    <div class="day">
+      <div class="day-num">Day 3 — Leisure + Hills</div>
+      <div class="day-title">Trekking, spa &amp; Lal Tibba</div>
+      <div class="act">Morning: Guided resort trek through walnut groves</div>
+      <div class="act">Midday: JW Farm Lunch experience · adults: Cedar Spa by L'Occitane</div>
+      <div class="act">Afternoon: Lal Tibba viewpoint (highest point in Mussoorie, 20 min drive)</div>
+      <div class="act">Evening: Putting green · pool time · final dinner</div>
+    </div>
+    <div class="day">
+      <div class="day-num">Day 4 — Departure</div>
+      <div class="day-title">Leisurely checkout</div>
+      <div class="act">Late breakfast · resort walk · checkout</div>
+      <div class="act">Drive to Dehradun airport (2 hrs) · flights home</div>
+    </div>
+  </div>
+
+  <!-- KHYBER -->
+  <div class="itin-card">
+    <div class="itin-head kh">
+      The Khyber · Gulmarg
+      <span class="itin-sub">3 nights · 4 days · Srinagar airport base</span>
+    </div>
+    <div class="day">
+      <div class="day-num">Day 1 — Arrival</div>
+      <div class="day-title">Into the mountains</div>
+      <div class="act">Fly into Srinagar · 2 hr drive to Gulmarg (scenic route via Tangmarg)</div>
+      <div class="act">Check in · first Himalayan views from balcony</div>
+      <div class="act">Bonfire dinner · Kashmiri Wazwan introduction</div>
+    </div>
+    <div class="day">
+      <div class="day-num">Day 2 — Gondola Day</div>
+      <div class="day-title">Ride to 13,000 ft</div>
+      <div class="act">Morning: Gulmarg Gondola Phase 1 (Kongdoori) — panoramic Himalayan views · all ages</div>
+      <div class="act">Afternoon: Gulmarg meadow walk · wildflowers in bloom (late May)</div>
+      <div class="act">Evening: Heated indoor pool · spa · multi-cuisine dining</div>
+    </div>
+    <div class="day">
+      <div class="day-num">Day 3 — Leisure + Srinagar</div>
+      <div class="day-title">Meadows &amp; Dal Lake</div>
+      <div class="act">Morning: Resort activities — table tennis, snooker, kids club, spa</div>
+      <div class="act">Afternoon: Day trip to Srinagar (1.5 hrs) — Shikara ride on Dal Lake · Mughal Gardens</div>
+      <div class="act">Evening: Return to Khyber · farewell dinner</div>
+    </div>
+    <div class="day">
+      <div class="day-num">Day 4 — Departure</div>
+      <div class="day-title">Final meadow morning</div>
+      <div class="act">Morning walk through Gulmarg meadows · breakfast at resort</div>
+      <div class="act">Drive to Srinagar airport (1.5–2 hrs) · flights home</div>
+    </div>
+  </div>
+
+  <!-- NAINI RETREAT -->
+  <div class="itin-card">
+    <div class="itin-head nr">
+      Naini Retreat · Nainital
+      <span class="itin-sub">3 nights · 4 days · Pantnagar or drive-in</span>
+    </div>
+    <div class="day">
+      <div class="day-num">Day 1 — Arrival</div>
+      <div class="day-title">The lake welcomes you</div>
+      <div class="act">Fly Pantnagar (or drive from Delhi/Gurgaon/Agra) · settle in</div>
+      <div class="act">Evening: Naini Lake boat ride at golden hour</div>
+      <div class="act">Mall Road walk · dinner at hotel</div>
+    </div>
+    <div class="day">
+      <div class="day-num">Day 2 — Nainital Full Day</div>
+      <div class="day-title">Lake, hills &amp; wildlife</div>
+      <div class="act">Morning: Snow View ropeway · panoramic Himalayan views</div>
+      <div class="act">Midday: Eco Cave Gardens · Tiffin Top (Dorothy's Seat) — pre-teens love the hike</div>
+      <div class="act">Afternoon: High Altitude Zoo · Naini Lake boating</div>
+      <div class="act">Evening: Indoor pool · hotel dinner</div>
+    </div>
+    <div class="day">
+      <div class="day-num">Day 3 — Bhimtal &amp; Resort</div>
+      <div class="day-title">Lakes &amp; leisure</div>
+      <div class="act">Morning: Bhimtal lake (30 min drive) — boating, aquarium, peaceful island cafe</div>
+      <div class="act">Afternoon: Hotel pool day · spa · kids playground · indoor games</div>
+      <div class="act">Evening: Stargazing session (Mr Roy from Namah — highly rated)</div>
+    </div>
+    <div class="day">
+      <div class="day-num">Day 4 — Departure</div>
+      <div class="day-title">Last lake morning</div>
+      <div class="act">Morning walk along Naini Lake promenade · breakfast</div>
+      <div class="act">Drive to Pantnagar airport or onward to Delhi/home cities</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
